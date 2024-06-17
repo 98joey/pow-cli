@@ -1,0 +1,23 @@
+{
+  "name": "pow-cli",
+  "version": "1.0.1",
+  "description": "a cli tool for front-end component template",
+  "main": "index.js",
+  "bin": {
+    "pow-cli": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/98joey/pow-cli.git"
+  },
+  "author": "jiaming.wu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/98joey/pow-cli/issues"
+  },
+  "homepage": "https://github.com/98joey/pow-cli#readme",
+  "volta": {
+    "node": "14.17.0",
+    "yarn": "1.22.19"
+  }
+}
