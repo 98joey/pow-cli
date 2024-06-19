@@ -98,6 +98,42 @@ const getCreatedFiles = (name, type) => {
 }
 
 /**
+ * 更新全局导入
+ * @param {*} name  
+ */
+
+const fineIndex = (lines, fuzzy) => {
+  let lastIndex = -1
+  lines.forEach((line, index) => {
+    if (line.includes(fuzzy)) {
+      lastIndex = index
+    }
+  })
+  return lastIndex
+}
+const updateGlobalImport = async (name) => {
+  const componentName = _.upperFirst(_.camelCase(name))
+  const indexPath = path.resolve(process.cwd(), 'src/index.ts')
+  if(!fsSync.existsSync(indexPath)) {
+    console.log(chalk.red('The index.ts file does not exist in the src directory'))
+    process.exit(1)
+  }
+  let data = await fs.readFile(indexPath, 'utf-8')
+  const lines = data.split('\n')
+  const importIndex = fineIndex(lines, 'import {')
+  const exportIndex = fineIndex(lines, 'export * from')
+  const importStr = `import { ${componentName} } from './${name}'`
+  const exportStr = `export * from './${name}'`
+  lines.splice(importIndex + 1, 0, importStr)
+  lines.splice(exportIndex + 2, 0, exportStr)
+  const componentIndex = fineIndex(lines, 'const components = [')
+  const componentsStr = `  ${componentName},`
+  lines.splice(componentIndex + 1, 0, componentsStr)
+  data = lines.join('\n')
+  await fs.writeFile(indexPath, data)
+}
+
+/**
  * 添加一个组件
  */
 const addComponent = async (name, type) => {
@@ -128,7 +164,11 @@ const addComponent = async (name, type) => {
     await createFile(outputPath, data)
     console.log(`已创建：${outputPath}`)
   })
+
+  updateGlobalImport(name)
 }
+
+
 
 
 module.exports = {
